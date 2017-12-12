@@ -1,0 +1,9 @@
+﻿@model LogoModel
+@using Nop.Web.Models.Common;
+@*<a class="navbar-brand" href="@Url.RouteUrl("HomePage")">
+    <img title="" alt="@Model.StoreName" src="@Model.LogoPath">
+</a>*@
+<a class="navbar-brand colorWhite" href="@Url.RouteUrl("HomePage")">
+    @*<img title="" alt="@storeName" src="@Url.Content(logoPath)">*@
+    @Model.StoreName
+</a>

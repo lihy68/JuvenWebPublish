@@ -1,0 +1,81 @@
+﻿@model CustomerProductReviewsModel
+@using Nop.Web.Models.Catalog
+@using Nop.Web.Models.Customer;
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.CustomerProductReviews").Text);
+    //page class
+    Html.AppendPageCssClassParts("html-my-product-reviews-list-page");
+}
+@section left
+{
+    @Html.Action("CustomerNavigation", "Customer", new { selectedTabId = CustomerNavigationEnum.ProductReviews })
+}
+
+<div class="page-header page-header-custom">
+    <h3>@T("Account.MyAccount") - @T("Account.CustomerProductReviews")</h3>
+</div>
+@if (Model.ProductReviews.Count > 0)
+{
+    foreach (var review in Model.ProductReviews)
+    {
+        @GetReviewRow(review)
+    }
+    var pager = Html.Pager(Model.PagerModel);
+    if (!MvcHtmlString.IsNullOrEmpty(pager))
+    {
+        <div class="pager">
+            @pager
+        </div>
+    }
+}
+else
+{
+    <div class="no-data">
+        @T("Account.CustomerProductReviews.NoRecords")
+    </div>
+}
+
+@helper GetReviewRow(CustomerProductReviewModel review)
+{
+int fStar = review.Rating;
+    <div class="marginBottom10">
+        <h4>
+            <strong>@review.Title</strong>@(!string.IsNullOrEmpty(review.ApprovalStatus) ? string.Format(" - {0}", review.ApprovalStatus) : null)
+        </h4>
+        <div>
+            @for (int i = 0; i < fStar; i++)
+            {
+                <i class="fa fa-star fa-lg colorStar"></i>
+            }
+            @for (int i = 0; i < (5 - fStar); i++)
+            {
+                <i class="fa fa-star-o fa-lg"></i>
+            }
+        </div>
+        <div class="marginTop15">
+            @Html.Raw(Nop.Core.Html.HtmlHelper.FormatText(review.ReviewText, false, true, false, false, false, false))
+        </div>
+        <div class="marginTop15 text-muted">
+            <label>@T("Account.CustomerProductReviews.ProductReviewFor"):</label>
+            <a href="@Url.RouteUrl("Product", new {SeName = review.ProductSeName})">@review.ProductName</a>
+            <span class="separator">|</span>
+            <label>@T("Reviews.Date"):</label>
+            <span>@review.WrittenOnStr</span>
+        </div>
+        @if (!String.IsNullOrEmpty(review.ReplyText))
+        {
+            <div class="reply">
+                <div class="reply-header">
+                    @T("Reviews.Reply")
+                </div>
+                <div class="reply-text">
+                    @Html.Raw(Nop.Core.Html.HtmlHelper.FormatText(review.ReplyText, false, true, false, false, false, false))
+                </div>
+            </div>
+        }
+    </div>
+    <hr />
+}
